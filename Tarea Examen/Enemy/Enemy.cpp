@@ -13,7 +13,8 @@ int getRolledAttack(int attack) {
     return (rand() % (attack - lowerLimit)) + lowerLimit;
 }
 
-Enemy::Enemy(string name, int health, int attack, int defense, int speed) : Character(name, health, attack, defense, speed, false) {
+Enemy::Enemy(char* name, int health, int attack, int defense, int speed, int expValue) : Character(name, health, attack, defense, speed, false), experienceValue(expValue) {
+
     maxHealth = health;
 }
 
@@ -32,6 +33,21 @@ void Enemy::takeDamage(int damage) {
         cout<<getName()<<" has taken " << damage << " damage" << endl;
     }
 }
+
+void Enemy :: mostrarEstado () {
+
+    cout << "Ataque: " << attack << endl;
+    cout << "Defensa: " << defense << endl;
+    cout << "Velocidad: " << speed << endl;
+}
+
+void Enemy::incrementarEstadisticas(int cantidad) {
+    attack += cantidad;
+    defense += cantidad;
+    speed += cantidad;
+}
+
+
 
 Character* Enemy::getTarget(vector<Player *> teamMembers) {
     // Obtiene el miembro del equipo con menos vida

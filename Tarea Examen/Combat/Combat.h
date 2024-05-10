@@ -28,9 +28,10 @@ private:
     Character* getTarget(Character* target);
     void registerActions();
     void executeActions();
-
+    void grantExperience();
     void checkParticipantStatus(Character* participant);
     void checkForFlee(Character* character);
+    void increaseEnemyStats();
 
 public:
     Combat(vector<Character*> _participants);

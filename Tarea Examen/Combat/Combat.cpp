@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 
+
 using namespace std;
 
 bool compareSpeed(Character *a, Character *b) {
@@ -45,6 +46,7 @@ void Combat::addParticipant(Character *participant) {
 void Combat::prepareCombat() {
     sort(participants.begin(), participants.end(), compareSpeed);
 }
+
 
 void Combat::doCombat() {
     prepareCombat();
@@ -130,6 +132,30 @@ void Combat::checkForFlee(Character *character) {
     }
 }
 
+void Combat::grantExperience() {
+    for (auto& enemy : enemies) {
+        if (enemy->getHealth() <= 0) {
+            // Derrotar al enemigo otorga experiencia al jugador
+            for (auto& player : teamMembers) {
+                player->gainExperience(enemy->getExperienceValue());
+            }
+        }
+    }
+}
+
+// Aumenta las estadísticas de los enemigos al subir de nivel el jugador
+void Combat::increaseEnemyStats() {
+    for (auto& enemy : enemies) {
+
+        int aumentoEstadisticas = 5;
+
+        for (auto& enemy : enemies) {
+            // Incrementar las estadísticas del enemigo al mismo ritmo que el jugador
+            enemy->incrementarEstadisticas(aumentoEstadisticas);
+        }
+    }
+
+}
 string Combat::participantsToString() {
     string result = "";
     for (int i = 0; i < participants.size(); i++) {
