@@ -13,7 +13,11 @@
 #include <string>
 #include <queue>
 
+
 using namespace std;
+class Enemy;
+class player;
+
 
 class Combat {
 private:
@@ -28,10 +32,9 @@ private:
     Character* getTarget(Character* target);
     void registerActions();
     void executeActions();
-    void grantExperience();
+
     void checkParticipantStatus(Character* participant);
     void checkForFlee(Character* character);
-    void increaseEnemyStats();
 
 public:
     Combat(vector<Character*> _participants);
@@ -40,6 +43,8 @@ public:
     void addParticipant(Character *participant);
     void doCombat();
     string participantsToString();
+    void grantExperience(Character *player, Enemy *enemy);
+    bool recompensarjugador (Character *enemy);
 };
 
 

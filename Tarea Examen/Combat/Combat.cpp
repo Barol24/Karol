@@ -5,7 +5,6 @@
 #include <iostream>
 #include <algorithm>
 
-
 using namespace std;
 
 bool compareSpeed(Character *a, Character *b) {
@@ -47,7 +46,6 @@ void Combat::prepareCombat() {
     sort(participants.begin(), participants.end(), compareSpeed);
 }
 
-
 void Combat::doCombat() {
     prepareCombat();
 
@@ -60,11 +58,26 @@ void Combat::doCombat() {
     //No se imprime el nombre del ganador
     if(enemies.size() == 0) {
         cout<<"You have won the combat"<<endl;
+        for (Enemy* enemy : enemies) {
+            // Verificar si el enemigo está muerto
+            if (enemy->health <= 0) {
+                // Imprime la experiencia del enemigo derrotado
+                cout << "Enemy had " << enemy->experience << " experience." << endl;
+            }
+        }
+        // Iterar a través de todos los miembros del equipo
+        for (Player* player : teamMembers) {
+            // Imprimir la experiencia total ganada por el jugador
+            cout << "Player " << player->getName() << " has won " << player->experience << " experience." << endl;
+        }
     }
     else {
         cout<<"The enemies have won the combat - Game Over"<<endl;
     }
 }
+
+
+
 
 void Combat::registerActions() {
     vector<Character*>::iterator participant = participants.begin();
@@ -89,6 +102,14 @@ void Combat::executeActions() {
         Action currentAction = actions.top();
         currentAction.action();
         checkForFlee(currentAction.subscriber);
+
+        if (currentAction.target!= nullptr && currentAction.target->getHealth() <= 0) {
+
+            grantExperience(currentAction.subscriber, (Enemy *) currentAction.target);
+
+        }
+
+
         if(currentAction.target!= nullptr)
             {
                 checkParticipantStatus(currentAction.subscriber);
@@ -111,6 +132,7 @@ void Combat::checkParticipantStatus(Character* participant) {
             teamMembers.erase(remove(teamMembers.begin(), teamMembers.end(), participant), teamMembers.end());
         }
         else {
+            recompensarjugador(participant);
             enemies.erase(remove(enemies.begin(), enemies.end(), participant), enemies.end());
         }
         participants.erase(remove(participants.begin(), participants.end(), participant), participants.end());
@@ -131,31 +153,20 @@ void Combat::checkForFlee(Character *character) {
         participants.erase(remove(participants.begin(), participants.end(), character), participants.end());
     }
 }
-
-void Combat::grantExperience() {
-    for (auto& enemy : enemies) {
-        if (enemy->getHealth() <= 0) {
-            // Derrotar al enemigo otorga experiencia al jugador
-            for (auto& player : teamMembers) {
-                player->gainExperience(enemy->getExperienceValue());
-            }
-        }
+void Combat::grantExperience(Character *player, Enemy *enemy) {
+    if (enemy->getHealth() <= 0) {
+        cout << "Enemy had " << enemy->getExperience() << " experience." << endl;
     }
 }
 
-// Aumenta las estadísticas de los enemigos al subir de nivel el jugador
-void Combat::increaseEnemyStats() {
-    for (auto& enemy : enemies) {
-
-        int aumentoEstadisticas = 5;
-
-        for (auto& enemy : enemies) {
-            // Incrementar las estadísticas del enemigo al mismo ritmo que el jugador
-            enemy->incrementarEstadisticas(aumentoEstadisticas);
-        }
+bool Combat::recompensarjugador (Character *enemy) {
+    int nivelesasubir = enemy->getExperience();
+    for (Player* member : teamMembers) {
+        member->gainExperience(nivelesasubir);
+        member->printStatsOnLevelUp();
     }
-
 }
+
 string Combat::participantsToString() {
     string result = "";
     for (int i = 0; i < participants.size(); i++) {

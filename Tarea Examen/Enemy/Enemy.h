@@ -7,30 +7,21 @@
 #include "../Character/Character.h"
 #include "../Player/Player.h"
 #include "../Combat/Action.h"
-#include <vector>
+
 struct Action;
 class Player;
 
 class Enemy: public Character {
-private:
-    int experienceValue;
-    vector<Enemy*> enemies;
-
 public:
+    int health;
+    int experience;
     int maxHealth;
-    Enemy(char*, int, int, int, int, int);
+    Enemy(char* name, int health, int attack, int defense, int speed);
     void doAttack(Character *target) override;
     void takeDamage(int damage) override;
-    void mostrarEstado ();
-    void incrementarEstadisticas(int cantidad);
+    void incrementarEstadisticas (int);
     Character* getTarget(vector<Player*> teamMembers);
     Action takeAction(vector<Player*> player);
-    int getExperienceValue();
-
-    const std::vector<Enemy*>& getEnemies() const {
-        return enemies;
-    }
-
 };
 
 

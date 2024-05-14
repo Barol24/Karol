@@ -13,15 +13,22 @@ int getRolledAttack(int attack) {
     return (rand() % (attack - lowerLimit)) + lowerLimit;
 }
 
-Enemy::Enemy(char* name, int health, int attack, int defense, int speed, int expValue) : Character(name, health, attack, defense, speed, false), experienceValue(expValue) {
-
-    maxHealth = health;
+Enemy::Enemy(char* name, int health, int attack, int defense, int speed)
+        : Character(name, health, attack, defense, speed, false, 0, 1), maxHealth(health)  {
 }
 
 void Enemy::doAttack(Character *target) {
     int rolledAttack = getRolledAttack(getAttack());
     int trueDamage = target->getDefense() > rolledAttack ? 0 : rolledAttack - target->getDefense();
     target->takeDamage(trueDamage);
+}
+void Enemy::incrementarEstadisticas(int ) {
+
+    attack += 24;
+
+    defense += 24;
+
+    speed += 24;
 }
 
 void Enemy::takeDamage(int damage) {
@@ -30,24 +37,9 @@ void Enemy::takeDamage(int damage) {
         cout<<getName()<<" has died"<<endl;
     }
     else {
-        cout<<getName()<<" has taken " << damage << " damage" << endl;
+        cout<<getName()<<" Toma " << damage << " dano" << endl;
     }
 }
-
-void Enemy :: mostrarEstado () {
-
-    cout << "Ataque: " << attack << endl;
-    cout << "Defensa: " << defense << endl;
-    cout << "Velocidad: " << speed << endl;
-}
-
-void Enemy::incrementarEstadisticas(int cantidad) {
-    attack += cantidad;
-    defense += cantidad;
-    speed += cantidad;
-}
-
-
 
 Character* Enemy::getTarget(vector<Player *> teamMembers) {
     // Obtiene el miembro del equipo con menos vida
@@ -69,7 +61,7 @@ Action Enemy::takeAction(vector<Player *> player) {
     myAction.subscriber = this;
     Character* target = getTarget(player);
     srand(time(NULL));
-    if (this->getHealth() < maxHealth && rand() % 100 < 100){
+    if (this->getHealth() < maxHealth && rand() % 100 < 15){
         myAction.action = [this, target]() {
             this->fleed = true;
         };

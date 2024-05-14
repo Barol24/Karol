@@ -18,23 +18,24 @@ void Player::mostrar() {
 }
 
 
+Player::Player(char* _name, int _health, int _attack, int _defense, int _speed, int _poderMagico, std::string nacio_)
+        : Character(_name, _health, _attack, _defense, _speed, true, 0, 1), poderMagico(_poderMagico), nacionalidad(nacio_) {
 
-Player::Player(char* name, int health, int attack, int defense, int speed, int _poderMagico, char*   nacio) : Character(name, health, attack, defense,
-                                                                                        speed, true) {
+
     poderMagico = _poderMagico;
-    nacionalidad = nacio;
+    nacionalidad = nacio_;
     experience = 25;
     level = 2;
 }
-Player::Player(char* _name , int _health, int _attack, int _defense, int _speed, bool _isPlayer, int _experience, int _level):Character(_name, _health, _attack, _defense,
-        _speed, _isPlayer) {
+//Player::Player(char* _name , int _health, int _attack, int _defense, int _speed, bool _isPlayer, int _experience, int _level):Character(_name, _health, _attack, _defense,
+//_speed, _isPlayer) {
 
-        experience = _experience;
-        level = _level;
+//experience = _experience;
+// level = _level;
 
-}
+//}
 
-void Player::doAttack(Character *target) {
+    void Player::doAttack(Character *target) {
     int rolledAttack = getRolledAttack(getAttack());
     int trueDamage = target->getDefense() > rolledAttack ? 0 : rolledAttack - target->getDefense();
     target->takeDamage(trueDamage);
@@ -58,7 +59,7 @@ void Player::flee(vector<Enemy *> enemies) {
         srand(time(NULL));
         int chance = rand() % 100;
         cout << "chance: " << chance << endl;
-        fleed = chance > 99;
+        fleed = chance > 80;
     }
 
     this->fleed = fleed;
@@ -68,59 +69,32 @@ void Player::emote() {
     cout << "Jokes on you" << endl;
 }
 
-void Player ::derrotarEnemy(int expGanada){
-    experiencia += expGanada;
-    while (experiencia <= 100) {
-        levelUp();
-    }
-}
-
 void Player::levelUp() {
     level++;
-    level++;
-    if (experiencia > 100) {
-        int remanenteExperiencia = experiencia - 100;
-        experiencia = remanenteExperiencia;
-    }
-    else {
-        experiencia = 0;
-    }
-
-    attack += 5;
-    defense += 2;
-    speed += 2;
     setHealth(getHealth() + 10);
     setAttack(getAttack() + 5);
     setDefense(getDefense() + 5);
     setSpeed(getSpeed() + 5);
 
-    cout << "¡Has subido al nivel " << level << "!" << endl;
-    cout << "Tus características han aumentado: " << endl;
-    cout << "Ataque +" << 5 << endl;
-    cout << "Defensa +" << 3 << endl;
-    cout << "Velocidad +" << 2 << endl;
-
-    for (auto& enemy : enemies) {
-        enemy->incrementarEstadisticas(5);
-    }
-
 }
 
-void Player::gainExperience(int exp) {
+void Player::gainExperience(int exp)   {
     experience += exp;
-    derrotarEnemy(exp);
-
+    while (experience >= 100) {
+        level++;
+        experience -=100;
+        levelUp();
+        printStatsOnLevelUp();
     }
-
-
-void Player::mostrarEstadisticas() {
-    cout<<"level: " <<level <<::endl;
-    cout<<"Experience: "<< experience << ::endl;
-    cout<< "attack: " << attack <<:: endl;
-    cout << "Defense" << defense << ::endl;
+}
+void Player::printStatsOnLevelUp()  {
+    cout << "Congratulations! You have reached level " << level << endl;
+    cout << "Experience: " << experience << endl;
+    cout << "Attack: " << attack << endl;
+    cout << "Defense: " << defense << endl;
+    cout << "Speed: " << speed << endl;
 
 }
-
 
 Character *Player::getTarget(vector<Enemy *> enemies) {
     cout << "Choose a target" << endl;
@@ -236,6 +210,6 @@ Player* Player::unserialize(char* _buffer) {
     memcpy(&_level,iterador,  sizeof _level);
 
 
-    return new Player(_name, _health, _attack, _defense, _speed, _isPlayer, _experience, _level);
+    //return new Player(_name, _health, _attack, _defense, _speed, _isPlayer, _experience, _level)
 
 }

@@ -8,25 +8,22 @@
 #include "../Character/Character.h"
 #include "../Enemy/Enemy.h"
 #include "../Combat/Action.h"
-
-
+#include <string>
 struct Action;
 class Enemy;
 
 class Player: public Character {
 
-protected:
-    int experience;
+private:
     int level;
 
-public:
-    char* nacionalidad  = "";
-    int poderMagico = 0;
-    int experiencia = 0;
 
+public:
+    string nacionalidad  = "";
+    int poderMagico = 0;
     void mostrar();
-    Player(char* _name , int _health, int _attack, int _defense, int _speed, int poder_, char* nacio_);
-    Player(char* _name , int _health, int _attack, int _defense, int _speed, bool _isPlayer, int _experience, int _level);
+    Player(char* _name, int _health, int _attack, int _defense, int _speed, int _poderMagico, string _nacio);
+    Player(char* _name , int _health, int _attack, int _defense, int _speed, int poder_, char* nacio_, bool _isPlayer, int _experience, int _level);
     void doAttack(Character *target) override;
     void takeDamage(int damage) override;
     char* serialize ();
@@ -35,16 +32,16 @@ public:
     static Player* unserialize (char* buffer);
 
     Character* getTarget(vector<Enemy*> enemies);
-    void derrotarEnemy(int expGanada);
+
     void flee(vector<Enemy*> enemies);
     void emote();
     void levelUp();
-    void gainExperience(int expe);
-    void mostrarEstadisticas ();
-
+    void gainExperience(int exp);
+    void printStatsOnLevelUp();
 
     //Podemos hacer que este vector sea polimorfico?
     Action takeAction(vector<Enemy*> enemies);
+    int experience;
 
 private:
     char buffer[Player::BUFFER_SIZE];
